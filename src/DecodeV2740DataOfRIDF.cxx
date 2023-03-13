@@ -75,68 +75,77 @@ int main(int argc, char** argv){
 
 	  tsFADC                    = fdata->GetTimeStamp();
 	  energy[fch]               = fdata->GetEnergy();
-	  analogProbeInfo[fch][0]   = fdata->GetAnalogProbeInfo(0);
-	  analogProbeInfo[fch][1]   = fdata->GetAnalogProbeInfo(1);
-	  digitalProbeInfo[fch][0]  = fdata->GetDigitalProbeInfo(0);
-	  digitalProbeInfo[fch][1]  = fdata->GetDigitalProbeInfo(1);
-	  digitalProbeInfo[fch][2]  = fdata->GetDigitalProbeInfo(2);
-	  digitalProbeInfo[fch][3]  = fdata->GetDigitalProbeInfo(3);
 
-	  for(int iaprobe=0;iaprobe<2;iaprobe++){
-	    uint8_t temp = (analogProbeInfo[fch][iaprobe]&0b00110000)>>4;
-	    //	    uint8_t temp = analogProbeInfo[fch][iaprobe];
-	    //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)analogProbeInfo[fch][iaprobe]<<" ";
-	    //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)(analogProbeInfo[fch][iaprobe]&0b00110000)<<" ";	    
-	    //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)((analogProbeInfo[fch][iaprobe]&0b00110000)>>4)<<" ";
-	    switch(temp){
-	    case 0:
-	      analogMultiFac[fch][iaprobe] = 1;
-	      break;
-	    case 1:
-	      analogMultiFac[fch][iaprobe] = 4;
-	      break;	      
-	    case 2:
-	      analogMultiFac[fch][iaprobe] = 8;
-	      break;
-	    case 3:
-	      analogMultiFac[fch][iaprobe] = 16;
-	      break;
-	    default:
-	      analogMultiFac[fch][iaprobe] = 0;
-	      break;
-	    }
+	  if(fdata->GetFlagIsLast()){
+	    fFill = false;
+	    cout<<" GetFlagIsLast() ="<<(int)fdata->GetFlagIsLast()<<endl;	    
 	  }
-	  //	  cout<<endl;
+	  else{
+	    analogProbeInfo[fch][0]   = fdata->GetAnalogProbeInfo(0);
+	    analogProbeInfo[fch][1]   = fdata->GetAnalogProbeInfo(1);
+	    digitalProbeInfo[fch][0]  = fdata->GetDigitalProbeInfo(0);
+	    digitalProbeInfo[fch][1]  = fdata->GetDigitalProbeInfo(1);
+	    digitalProbeInfo[fch][2]  = fdata->GetDigitalProbeInfo(2);
+	    digitalProbeInfo[fch][3]  = fdata->GetDigitalProbeInfo(3);
 
-	  //	  cout<<"fch = "<<fch<<" TimeStamp = "<<tsFADC<<endl;
-	  //	  cout<<"TimeStamp2 = "<<tsFADC<<" energy2 = "<<fdata->GetEnergy()<<endl;	      	    	  	  	  
 
-	  for(int itb=0;itb<Nsamples;itb++){
-	    if(!ifdata){
-	      timeBacket[itb] = fdata->GetTimeBacket(itb);
+	    for(int iaprobe=0;iaprobe<2;iaprobe++){
+	      uint8_t temp = (analogProbeInfo[fch][iaprobe]&0b00110000)>>4;
+	      //	    uint8_t temp = analogProbeInfo[fch][iaprobe];
+	      //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)analogProbeInfo[fch][iaprobe]<<" ";
+	      //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)(analogProbeInfo[fch][iaprobe]&0b00110000)<<" ";	    
+	      //	    cout<<"MultiFac["<<iaprobe<<"] = "<<(int)((analogProbeInfo[fch][iaprobe]&0b00110000)>>4)<<" ";
+	      switch(temp){
+	      case 0:
+		analogMultiFac[fch][iaprobe] = 1;
+		break;
+	      case 1:
+		analogMultiFac[fch][iaprobe] = 4;
+		break;	      
+	      case 2:
+		analogMultiFac[fch][iaprobe] = 8;
+		break;
+	      case 3:
+		analogMultiFac[fch][iaprobe] = 16;
+		break;
+	      default:
+		analogMultiFac[fch][iaprobe] = 0;
+		break;
+	      }
 	    }
+	    //	  cout<<endl;
 
-	    fadc[fch][itb] = fdata->GetVal(itb);
-	    analogProbe[fch][0][itb] = fdata->GetAnalogProbe(0, itb);
-	    analogProbe[fch][1][itb] = fdata->GetAnalogProbe(1, itb);
-	    digitalProbe[fch][0][itb] = fdata->GetDigitalProbe(0, itb);
-	    digitalProbe[fch][1][itb] = fdata->GetDigitalProbe(1, itb);
-	    digitalProbe[fch][2][itb] = fdata->GetDigitalProbe(2, itb);
-	    digitalProbe[fch][3][itb] = fdata->GetDigitalProbe(3, itb);
+	    //	  cout<<"fch = "<<fch<<" TimeStamp = "<<tsFADC<<endl;
+	    //	  cout<<"TimeStamp2 = "<<tsFADC<<" energy2 = "<<fdata->GetEnergy()<<endl;	      	    	  	  	  
 
-//	    
-//	    cout<<"TimeBacket = "<<itb
-//		<<" AnalogProbe0 = "<<analogProbe[2*fch+0][itb]
-//		<<" AnalogProbe1 = "<<analogProbe[2*fch+1][itb]
-//		<<" DigitalProbe0 = "<<digitalProbe[4*fch+0][itb]
-//		<<" DigitalProbe1 = "<<digitalProbe[4*fch+1][itb]
-//		<<" DigitalProbe2 = "<<digitalProbe[4*fch+2][itb] 
-//		<<" DigitalProbe3 = "<<digitalProbe[4*fch+3][itb]
-//		<<endl;
+	    for(int itb=0;itb<Nsamples;itb++){
+	      if(!ifdata){
+		timeBacket[itb] = fdata->GetTimeBacket(itb);
+	      }
+
+	      fadc[fch][itb] = fdata->GetVal(itb);
+	      analogProbe[fch][0][itb] = fdata->GetAnalogProbe(0, itb);
+	      analogProbe[fch][1][itb] = fdata->GetAnalogProbe(1, itb);
+	      digitalProbe[fch][0][itb] = fdata->GetDigitalProbe(0, itb);
+	      digitalProbe[fch][1][itb] = fdata->GetDigitalProbe(1, itb);
+	      digitalProbe[fch][2][itb] = fdata->GetDigitalProbe(2, itb);
+	      digitalProbe[fch][3][itb] = fdata->GetDigitalProbe(3, itb);
+
+	      //	    
+	      //	    cout<<"TimeBacket = "<<itb
+	      //		<<" AnalogProbe0 = "<<analogProbe[2*fch+0][itb]
+	      //		<<" AnalogProbe1 = "<<analogProbe[2*fch+1][itb]
+	      //		<<" DigitalProbe0 = "<<digitalProbe[4*fch+0][itb]
+	      //		<<" DigitalProbe1 = "<<digitalProbe[4*fch+1][itb]
+	      //		<<" DigitalProbe2 = "<<digitalProbe[4*fch+2][itb] 
+	      //		<<" DigitalProbe3 = "<<digitalProbe[4*fch+3][itb]
+	      //		<<endl;
+	    }
 	  }
 	}
       }
     }
+      
     if(fFill){
       tree->Fill();
       rawEvent->Clear();
@@ -149,9 +158,10 @@ int main(int argc, char** argv){
       fill_n(digitalProbeInfo.data(), digitalProbeInfo.num_elements(), 0);
       fill_n(energy          .data(), energy          .num_elements(), 0);                              
     }
-    if(!(counter%100)){
-      cout<<"\rcounter = "<<counter;
-    }
+    
+    //    if(!(counter%100)){
+    cout<<"\rcounter = "<<counter;
+      //    }
     counter++;
   }
   cout<<endl;  
