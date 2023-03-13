@@ -125,6 +125,9 @@ int main(int argc, char** argv){
 
 	      fadc[fch][itb] = fdata->GetVal(itb);
 	      analogProbe[fch][0][itb] = fdata->GetAnalogProbe(0, itb);
+//	      if(tsFADC == 5180428){
+//		cout<<"TimeBacket = "<<itb<<" wave = "<<analogProbe[fch][0][itb]<<endl;
+//	      }
 	      analogProbe[fch][1][itb] = fdata->GetAnalogProbe(1, itb);
 	      digitalProbe[fch][0][itb] = fdata->GetDigitalProbe(0, itb);
 	      digitalProbe[fch][1][itb] = fdata->GetDigitalProbe(1, itb);
