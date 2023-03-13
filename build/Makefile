@@ -1,0 +1,26 @@
+CXX=g++
+CXXFLAGS=`root-config --cflags --libs` -lMathMore -lanacore -g
+LD_FLAGS='-L/opt/anaroot/lib'
+
+TARGET=DecodeV2740DataOfRIDF
+SRCDIR=../src
+LIBSRCDIR=$(SRCDIR)/lib
+SRC=$(SRCDIR)/$(TARGET).cxx
+OBJ=$(notdir $(patsubst %.cxx,%.o,$(SRC)))
+LIBSRCS=$(wildcard $(LIBSRCDIR)/*.cxx)
+LIBOBJS=$(notdir $(patsubst %.cxx,%.o,$(LIBSRCS)))
+
+$(TARGET) : $(OBJ) $(LIBOBJS)
+	$(CXX) $(CXXFLAGS) $(LD_FLAGS) -o $@ $^
+
+$(OBJ) : $(SRC)
+	$(CXX) $(CXXFLAGS) $(LD_FLAGS) -o $@ -c $^
+
+./%.o : $(LIBSRCDIR)/%.cxx
+	$(CXX) $(CXXFLAGS) $(LD_FLAGS) -o $@ -c $^
+
+clean :
+	rm -rf *.o
+	rm -rf $(TARGET)
+
+.PHONY : run clean 
